@@ -7,7 +7,7 @@ use std::{
     time::Duration,
 };
 
-use web_server::ThreadPool;
+use web_server::thread_pool;
 
 fn main() {
     assert!(env::set_current_dir("./web_server").is_ok());
