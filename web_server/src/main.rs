@@ -3,20 +3,21 @@ use std::{
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream}, 
     env,
-    thread,
+    thread::{self},
     time::Duration,
 };
 
-use web_server::thread_pool;
+use web_server::thread_pool::*;
 
 fn main() {
     assert!(env::set_current_dir("./web_server").is_ok());
 
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
+    
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        
-        thread::spawn(|| {
+        pool.execute(|| {
             handle_connection(stream);
         });
     }

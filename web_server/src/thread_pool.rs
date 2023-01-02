@@ -1,11 +1,11 @@
 mod worker;
-mod job;
 
 use std::{ 
     sync::{ mpsc, Arc, Mutex }
 };
 use worker::Worker;
-use job::Job;
+
+type Job = Box<dyn FnOnce() + Send + 'static>;
 
 pub struct ThreadPool {
     workers: Vec<Worker>,
@@ -39,6 +39,7 @@ impl ThreadPool {
     where
         F: FnOnce() + Send + 'static,
     {
-
+        let job = Box::new(f);
+        self.sender.send(job).unwrap();
     }
 }
